@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <h3>{{ profile.user.username }}'s Profile</h3>
+    <div class="card" style="width: 18rem;">
+        {% if profile.profile_pic %}
+    <img src="{{ profile.profile_pic.url }}" alt="Profile Picture" width="270">
+        {% else %}
+            <p>No profile picture uploaded</p>
+        {% endif %}
+        <div class="card-body">
+            <p><strong>Username:</strong> {{ profile.user.username }}</p>
+            <p><strong>Email:</strong> {{ profile.user.email }}</p>
+            <p><strong>Location:</strong> {{ profile.location }}</p>
+            <p><strong>Bio:</strong> {{ profile.bio }}</p>
+        </div>
+    </div>
+</div>
+<a href="{% url 'edit_profile' user.id %}">Edit Profile</a>
+
+{% endblock %}
