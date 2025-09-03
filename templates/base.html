@@ -25,6 +25,9 @@
                 <ul class="navbar-nav ms-auto">
                     {% if user.is_authenticated %}
                         <li class="nav-item">
+                                <a class="nav-link" href="{% url 'create_post' %}">+ New Post</a>
+                        </li>
+                        <li class="nav-item">
                             <a class="nav-link" href="{% url 'profile' user.id %}">Profile</a>
                             <!-- <a class="nav-link" href="#">Profile</a> -->
                         </li>
