@@ -5,7 +5,8 @@ from .forms import PostForm
 from .models import Post
 
 def home(request):
-    return render(request, 'blog/home.html')
+    posts = Post.objects.all().order_by("-created_at") 
+    return render(request, "blog/home.html", {"posts": posts})
 
 
 @login_required
@@ -21,8 +22,7 @@ def create_post(request):
         form = PostForm()
     return render(request, 'blog/create_post.html', {'form': form})
 
-
-
+@login_required
 def post_detail(request, slug):
     post = get_object_or_404(Post, slug=slug)
-    return render(request, 'blog/post_detail.html', {'post': post})
+    return render(request, "blog/post_detail.html", {"post": post})
