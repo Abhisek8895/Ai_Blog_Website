@@ -1,2 +1,12 @@
-venv
+# Python
+__pycache__/
+*.py[cod]
+
+# Django
 db.sqlite3
+/media/
+staticfiles/
+/profiles/
+# Virtualenv
+venv/
+.env
