@@ -2,8 +2,26 @@
 
 {% block content %}
 <div class="container mt-4">
+  <!-- Category Navigation -->
+  <div class="mb-4">
+    <ul class="nav nav-pills justify-content-center">
+      <li class="nav-item">
+        <a class="nav-link {% if active_category == 'all' %}active{% endif %}" href="{% url 'home' %}">All</a>
+      </li>
+      {% for category in categories %}
+      <li class="nav-item">
+        <a class="nav-link {% if active_category == category.slug %}active{% endif %}" href="{% url 'category_posts' category.slug %}">
+          {{ category.name }}
+        </a>
+      </li>
+      {% endfor %}
+    </ul>
+  </div>
+  
   <h2 class="mb-4">Latest Blogs</h2>
 
+
+  <!-- Blog Cards -->
   <div class="row">
     {% for post in posts %}
       <div class="col-md-6 col-lg-4 mb-4">
@@ -23,7 +41,6 @@
             {% else %}
               <a href="{% url 'login' %}" class="btn btn-secondary mt-2">Login to Read</a>
             {% endif %}
-
           </div>
         </div>
       </div>

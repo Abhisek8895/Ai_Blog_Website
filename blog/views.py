@@ -3,12 +3,19 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseForbidden
 from .forms import PostForm
-from .models import Post
+from .models import Post, Category
 
 def home(request):
-    posts = Post.objects.all().order_by("-created_at") 
-    return render(request, "blog/home.html", {"posts": posts})
+    posts = Post.objects.all().order_by("-created_at")
+    categories = Category.objects.all()
+    return render(request, "blog/home.html", {"posts": posts, "categories":categories})
 
+
+def category_posts(request, slug):
+    category = get_object_or_404(Category, slug=slug)
+    posts = Post.objects.filter(category=category)
+    categories = Category.objects.all()
+    return render(request, "blog/home.html", {"posts": posts, "categories": categories, "active_category": category.slug})
 
 @login_required
 def create_post(request):
