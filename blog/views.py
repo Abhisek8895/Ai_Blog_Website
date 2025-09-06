@@ -45,3 +45,20 @@ def edit_post(request, slug):
         form = PostForm(instance=post)
 
     return render(request, "blog/edit_post.html", {"form": form, "post": post})
+
+@login_required
+def delete_post(request, slug):
+    post = get_object_or_404(Post, slug=slug)
+
+    # Check if the logged-in user is the author
+    if post.author != request.user:
+        return HttpResponseForbidden("You are not allowed to delete this post.")
+
+    if request.method == "POST":
+        # Delete the post
+        post.delete()
+        # Redirect to homepage (or profile page if you prefer)
+        return redirect("home")
+
+    # If GET request → show confirmation page
+    return render(request, "blog/delete_post.html", {"post": post})

@@ -9,6 +9,7 @@
 
     {% if user == post.author %}
         <a href="{% url 'edit_post' slug=post.slug %}" class="btn btn-warning">Edit</a>
+        <a href="{% url 'delete_post' slug=post.slug %}" class="btn btn-danger">Delete</a>
     {% endif %}
 
 </div>
