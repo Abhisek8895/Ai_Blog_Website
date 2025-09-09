@@ -4,6 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseForbidden
 from .forms import PostForm
 from .models import Post, Category
+from comments.forms import CommentForm
 
 def home(request):
     posts = Post.objects.all().order_by("-created_at")
@@ -33,7 +34,24 @@ def create_post(request):
 @login_required
 def post_detail(request, slug):
     post = get_object_or_404(Post, slug=slug)
-    return render(request, "blog/post_detail.html", {"post": post})
+    comments = post.comments.all().order_by("-created_at")  # latest first
+
+    if request.method == "POST":
+        form = CommentForm(request.POST)
+        if form.is_valid():
+            comment = form.save(commit=False)
+            comment.post = post
+            comment.author = request.user
+            comment.save()
+            return redirect("post_detail", slug=post.slug)
+    else:
+        form = CommentForm()
+
+    return render(
+        request,
+        "blog/post_detail.html",
+        {"post": post, "comments": comments, "form": form},
+    )
 
 @login_required
 def edit_post(request, slug):
