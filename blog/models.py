@@ -11,6 +11,7 @@ class Post(models.Model):
     category = models.ForeignKey("Category", on_delete=models.SET_NULL, null=True, blank=True)  # new field
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    likes = models.ManyToManyField(User, related_name="liked_posts", blank=True)
 
     def save(self, *args, **kwargs):
         if not self.slug:
@@ -19,7 +20,9 @@ class Post(models.Model):
 
     def __str__(self):
         return self.title
-
+    
+    def total_likes(self):
+        return self.likes.count()
 
 from django.db import models
 from django.utils.text import slugify

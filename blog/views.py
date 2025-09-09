@@ -87,3 +87,15 @@ def delete_post(request, slug):
 
     # If GET request → show confirmation page
     return render(request, "blog/delete_post.html", {"post": post})
+
+
+@login_required
+def like_post(request, slug):
+    post = get_object_or_404(Post, slug=slug)
+
+    if request.user in post.likes.all():
+        post.likes.remove(request.user)  # unlike
+    else:
+        post.likes.add(request.user)     # like
+
+    return redirect("post_detail", slug=slug)
