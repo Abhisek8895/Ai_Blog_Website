@@ -8,10 +8,12 @@ class Post(models.Model):
     content = models.TextField()
     image = models.ImageField(upload_to='posts/', blank=True, null=True)
     author = models.ForeignKey(User, on_delete=models.CASCADE)
-    category = models.ForeignKey("Category", on_delete=models.SET_NULL, null=True, blank=True)  # new field
+    category = models.ForeignKey("Category", on_delete=models.SET_NULL, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     likes = models.ManyToManyField(User, related_name="liked_posts", blank=True)
+    summary = models.TextField(blank=True, null=True)  
+    summary_updated_at = models.DateTimeField(null=True, blank=True)
 
     def save(self, *args, **kwargs):
         if not self.slug:
