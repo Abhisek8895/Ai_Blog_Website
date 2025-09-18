@@ -5,6 +5,8 @@ from django.http import HttpResponseForbidden
 from .forms import PostForm
 from .models import Post, Category
 from comments.forms import CommentForm
+from .ai_utils import generate_summary
+from django.utils import timezone
 
 def home(request):
     posts = Post.objects.all().order_by("-created_at")
@@ -99,3 +101,17 @@ def like_post(request, slug):
         post.likes.add(request.user)     # like
 
     return redirect("post_detail", slug=slug)
+
+@login_required
+def generate_summary_view(request, slug):
+    post = get_object_or_404(Post, slug=slug)
+
+    # Call Hugging Face API
+    summary = generate_summary(post.content)
+
+    if summary:
+        post.summary = summary
+        post.summary_updated_at = timezone.now()
+        post.save()
+
+    return redirect('post_detail', slug=post.slug)

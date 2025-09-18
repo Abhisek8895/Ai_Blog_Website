@@ -7,6 +7,33 @@
     <hr>
     <p>{{ post.content }}</p>
 
+    <!-- AI Summary Section -->
+    <div class="mt-4">
+        <h4>AI Summary</h4>
+        {% if post.summary %}
+            <div class="alert alert-info">
+                <p>{{ post.summary }}</p>
+                <small class="text-muted">Last updated: {{ post.summary_updated_at|date:"M d, Y H:i" }}</small>
+            </div>
+        {% else %}
+            <div class="alert alert-warning">
+                <p>No summary available yet.</p>
+            </div>
+        {% endif %}
+
+        {% if user.is_authenticated %}
+            <form method="post" action="{% url 'generate_summary' post.slug %}">
+            {% comment %} <form method="post" action="#"> {% endcomment %}
+                {% csrf_token %}
+                <button type="submit" class="btn btn-info">Generate Summary</button>
+            </form>
+        {% else %}
+            <p><a href="{% url 'login' %}">Login</a> to generate summary.</p>
+        {% endif %}
+    </div>
+
+    <hr>
+
     {% if user == post.author %}
         <a href="{% url 'edit_post' slug=post.slug %}" class="btn btn-warning">Edit</a>
         <a href="{% url 'delete_post' slug=post.slug %}" class="btn btn-danger">Delete</a>

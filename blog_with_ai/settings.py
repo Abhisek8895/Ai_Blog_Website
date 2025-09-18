@@ -127,3 +127,11 @@ import os
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+# Hugging face token access
+from dotenv import load_dotenv
+
+load_dotenv()  # load values from .env
+
+HF_API_TOKEN = os.getenv("hf_api_key")
+HF_HEADERS = {"Authorization": f"Bearer {HF_API_TOKEN}"}
