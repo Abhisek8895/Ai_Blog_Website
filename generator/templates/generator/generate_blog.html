@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>AI Blog Generator</h2>
+    <p class="text-muted">Generate a blog post using AI. Just provide a topic, word count, and tone.</p>
+
+    <form method="post" class="mb-4">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-primary">Generate Blog</button>
+    </form>
+
+    {% if generated_blog %}
+        <div class="card mt-4">
+            <div class="card-body">
+                <h4 class="card-title">Generated Blog</h4>
+                <p class="card-text" style="white-space: pre-line;">{{ generated_blog }}</p>
+            </div>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
