@@ -2,21 +2,30 @@
 
 {% block content %}
 <div class="container mt-5">
-    <h3>{{ profile.user.username }}'s Profile</h3>
-    <div class="card" style="width: 18rem;">
+  <div class="row justify-content-center">
+    <div class="col-md-6 col-lg-5">
+      <div class="card shadow-sm rounded text-center">
         {% if profile.profile_pic %}
-    <img src="{{ profile.profile_pic.url }}" alt="Profile Picture" width="270">
+          <img src="{{ profile.profile_pic.url }}" 
+               alt="Profile Picture" 
+               class="rounded-circle mx-auto mt-4" 
+               style="width:150px; height:150px; object-fit:cover;">
         {% else %}
-            <p>No profile picture uploaded</p>
+          <div class="bg-light rounded-circle mx-auto mt-4 d-flex align-items-center justify-content-center" 
+               style="width:150px; height:150px;">
+            <span class="text-muted">No Image</span>
+          </div>
         {% endif %}
+        
         <div class="card-body">
-            <p><strong>Username:</strong> {{ profile.user.username }}</p>
-            <p><strong>Email:</strong> {{ profile.user.email }}</p>
-            <p><strong>Location:</strong> {{ profile.location }}</p>
-            <p><strong>Bio:</strong> {{ profile.bio }}</p>
+          <h4 class="card-title mb-3">{{ profile.user.username }}</h4>
+          <p class="mb-1"><strong>Email:</strong> {{ profile.user.email }}</p>
+          <p class="mb-1"><strong>Location:</strong> {{ profile.location|default:"Not set" }}</p>
+          <p class="mb-3"><strong>Bio:</strong> {{ profile.bio|default:"No bio available" }}</p>
+          <a href="{% url 'edit_profile' user.id %}" class="btn btn-primary w-50">Edit Profile</a>
         </div>
+      </div>
     </div>
+  </div>
 </div>
-<a href="{% url 'edit_profile' user.id %}">Edit Profile</a>
-
 {% endblock %}
