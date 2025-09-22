@@ -1,9 +1,52 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
+
 {% block content %}
-  <h2>Edit Profile</h2>
-  <form method="POST" enctype="multipart/form-data">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Save Changes</button>
-  </form>
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-md-6 col-lg-5">
+      <div class="card shadow-sm rounded p-4">
+        <h3 class="text-center mb-4">Edit Profile</h3>
+
+        <form method="POST" enctype="multipart/form-data">
+          {% csrf_token %}
+
+          <!-- Profile Picture Preview -->
+          {% if profile.profile_pic %}
+            <div class="text-center mb-3">
+              <img src="{{ profile.profile_pic.url }}" alt="Profile Picture" 
+                   class="rounded-circle mb-2" style="width:100px; height:100px; object-fit:cover;">
+            </div>
+          {% endif %}
+
+          <!-- Form Fields -->
+          {% for field in form %}
+            <div class="mb-3">
+              {{ field.label_tag }}
+
+              {% if field.name == "bio" %}
+                <!-- Smaller bio textarea -->
+                <textarea name="{{ field.name }}" class="form-control" rows="3">{{ field.value }}</textarea>
+              {% elif field|slice:"0:0" %} 
+                <!-- Render other fields as input with form-control -->
+                <input type="{{ field.field.widget.input_type }}" name="{{ field.name }}" 
+                       value="{{ field.value|stringformat:'s' }}" class="form-control">
+              {% else %}
+                {{ field }}
+              {% endif %}
+
+              {% if field.help_text %}
+                <small class="form-text text-muted">{{ field.help_text }}</small>
+              {% endif %}
+              {% for error in field.errors %}
+                <div class="text-danger small">{{ error }}</div>
+              {% endfor %}
+            </div>
+          {% endfor %}
+
+          <button type="submit" class="btn btn-primary w-100">Save Changes</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
 {% endblock %}
