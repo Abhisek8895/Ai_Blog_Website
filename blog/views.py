@@ -7,6 +7,7 @@ from .models import Post, Category
 from comments.forms import CommentForm
 from .ai_utils import generate_summary
 from django.utils import timezone
+import markdown
 
 def home(request):
     posts = Post.objects.all().order_by("-created_at")
@@ -30,7 +31,12 @@ def create_post(request):
             post.save()
             return redirect('post_detail', slug=post.slug)
     else:
-        form = PostForm()
+        initial_data = {
+            "title": request.GET.get("title", ""),
+            "content": markdown.markdown(request.GET.get("content", ""))
+        }
+        form = PostForm(initial=initial_data)
+
     return render(request, 'blog/create_post.html', {'form': form})
 
 @login_required

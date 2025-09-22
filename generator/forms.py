@@ -1,5 +1,6 @@
 # generator/forms.py
 from django import forms
+from blog.models import Category
 
 class BlogGeneratorForm(forms.Form):
     prompt = forms.CharField(

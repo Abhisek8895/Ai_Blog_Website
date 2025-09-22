@@ -1,47 +1,42 @@
-# generator/views.py
 from django.shortcuts import render
-from django.conf import settings
-import requests
 from .forms import BlogGeneratorForm
+from .ai_utils import generate_blog_with_gemini
+import markdown
+from django.utils.safestring import mark_safe
+import re
 
-HF_API_URL = "https://api-inference.huggingface.co/models/google/flan-t5-large"
-HF_HEADERS = {"Authorization": f"Bearer {settings.HF_API_TOKEN}"}
+def save_generated_blog(request, blog_output,category):
+    pass
 
-def generate_blog_from_prompt(prompt, word_count=500, tone="neutral"):
-    """Call Hugging Face API to generate blog content."""
-    query = f"Write a {tone} blog post of around {word_count} words about: {prompt}"
+def blog_text_cleaning(blog_output):
+    # Remove starting/ending triple backticks and language markers
+    clean_text = re.sub(r"^```[a-zA-Z]*\n|```$", "", blog_output, flags=re.MULTILINE)
     
-    try:
-        response = requests.post(
-            HF_API_URL,
-            headers=HF_HEADERS,
-            json={"inputs": query},
-            timeout=60
-        )
-        response.raise_for_status()
-        result = response.json()
-        return result[0]["generated_text"] if isinstance(result, list) else None
-    except Exception as e:
-        print("Error generating blog:", e)
-        return None
+    # Extracting to dictionary
+    local_vars = {}
+    exec(clean_text, {}, local_vars)
+    blog_post = local_vars["blog_post"]
 
+    # Convert markdown content to HTML for Django
+    blog_post["Content"] = mark_safe(markdown.markdown(blog_post["Content"]))
+
+    return blog_post
 
 def blog_generator_view(request):
-    """Handle form submission and generate blog preview."""
-    generated_blog = None
-
+    blog_output = None
+    cleaned_blog = None
     if request.method == "POST":
         form = BlogGeneratorForm(request.POST)
         if form.is_valid():
             prompt = form.cleaned_data["prompt"]
             word_count = form.cleaned_data["word_count"]
             tone = form.cleaned_data["tone"]
-
-            generated_blog = generate_blog_from_prompt(prompt, word_count, tone)
+            blog_output = generate_blog_with_gemini(tone, word_count, prompt)
+            cleaned_blog = blog_text_cleaning(blog_output)
+            # print(cleaned_blog)
     else:
         form = BlogGeneratorForm()
-
     return render(request, "generator/generate_blog.html", {
         "form": form,
-        "generated_blog": generated_blog,
+        "cleaned_blog": cleaned_blog
     })

@@ -134,5 +134,9 @@ from dotenv import load_dotenv
 
 load_dotenv()  # load values from .env
 
+# Api key for summarization
 HF_API_TOKEN = os.getenv("hf_api_key")
 HF_HEADERS = {"Authorization": f"Bearer {HF_API_TOKEN}"}
+
+# Api key for generation 
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
