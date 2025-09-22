@@ -1,13 +1,54 @@
 {% extends "base.html" %}
 {% block title %}Login{% endblock %}
 {% block content %}
-<div class="container mt-4">
-  <h2>Login</h2>
-  <form method="POST">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit" class="btn btn-success">Login</button>
-  </form>
-  <p class="mt-2">Don’t have an account? <a href="{% url 'register' %}">Register</a></p>
+<div class="container">
+  <div class="row justify-content-center mt-5">
+    <div class="col-md-6 col-lg-5">
+      <div class="card shadow-sm">
+        <div class="card-body p-4">
+          <h3 class="card-title text-center mb-4">Login</h3>
+          <form method="POST">
+            {% csrf_token %}
+            
+            <!-- Non-field errors -->
+            {% if form.non_field_errors %}
+              <div class="alert alert-danger">
+                {% for error in form.non_field_errors %}
+                  <div>{{ error }}</div>
+                {% endfor %}
+              </div>
+            {% endif %}
+            
+            <!-- Username field -->
+            <div class="mb-3">
+              {{ form.username.label_tag }}
+              <input type="text" name="{{ form.username.name }}" 
+                     value="{{ form.username.value }}" 
+                     class="form-control" placeholder="Username" required>
+              {% for error in form.username.errors %}
+                <div class="text-danger small">{{ error }}</div>
+              {% endfor %}
+            </div>
+            
+            <!-- Password field -->
+            <div class="mb-3">
+              {{ form.password.label_tag }}
+              <input type="password" name="{{ form.password.name }}" 
+                     class="form-control" placeholder="Password" required>
+              {% for error in form.password.errors %}
+                <div class="text-danger small">{{ error }}</div>
+              {% endfor %}
+            </div>
+            
+            <button type="submit" class="btn btn-success w-100">Login</button>
+          </form>
+          
+          <p class="text-center mt-3 mb-0">
+            Don’t have an account? <a href="{% url 'register' %}">Register</a>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 {% endblock %}
