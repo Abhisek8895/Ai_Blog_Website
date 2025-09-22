@@ -1,51 +1,56 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="container mt-4">
-  <!-- Category Navigation -->
-  <div class="mb-4">
-    <ul class="nav nav-pills justify-content-center">
-      <li class="nav-item">
-        <a class="nav-link {% if active_category == 'all' %}active{% endif %}" href="{% url 'home' %}">All</a>
-      </li>
-      {% for category in categories %}
-      <li class="nav-item">
-        <a class="nav-link {% if active_category == category.slug %}active{% endif %}" href="{% url 'category_posts' category.slug %}">
-          {{ category.name }}
-        </a>
-      </li>
-      {% endfor %}
-    </ul>
-  </div>
-  
-  <h2 class="mb-4">Latest Blogs</h2>
+<div class="container mt-5">
 
+  <!-- Category Navigation -->
+  <div class="mb-4 text-center">
+  <h5 class="mb-3">Categories</h5>
+  <div class="d-flex flex-wrap justify-content-center gap-2">
+      <a href="{% url 'home' %}"
+        class=" badge rounded-pill text-decoration-none px-3 py-2 text-dark bg-light shadow-sm"
+        style="transition: 0.3s;" 
+        onmouseover="this.style.backgroundColor='#0d6efd'; this.style.color='white';"
+        onmouseout="this.style.backgroundColor='#f8f9fa'; this.style.color='black';">All</a>
+    {% for category in categories %}
+      <a href="{% url 'category_posts' category.slug %}" 
+         class="badge rounded-pill text-decoration-none px-3 py-2 text-dark bg-light shadow-sm"
+         style="transition: 0.3s;"
+         onmouseover="this.style.backgroundColor='#0d6efd'; this.style.color='white';"
+         onmouseout="this.style.backgroundColor='#f8f9fa'; this.style.color='black';">
+        {{ category.name }}
+      </a>
+    {% endfor %}
+  </div>
+</div>
+
+  <h2 class="mb-4 text-center">Latest Blogs</h2>
 
   <!-- Blog Cards -->
-  <div class="row">
+  <div class="row g-4">
     {% for post in posts %}
-      <div class="col-md-6 col-lg-4 mb-4">
-        <div class="card h-100 shadow-sm">
+      <div class="col-md-6 col-lg-4">
+        <div class="card h-100 rounded shadow-sm">
           {% if post.image %}
             <img src="{{ post.image.url }}" class="card-img-top" alt="{{ post.title }}" style="height:200px; object-fit:cover;">
           {% endif %}
           <div class="card-body d-flex flex-column">
             <h5 class="card-title">{{ post.title }}</h5>
-            <p class="card-text">{{ post.content|truncatewords:20 }}</p>
+            <p class="card-text">{{ post.content|truncatewords:20|safe }}</p>
             <p class="text-muted small mt-auto">
               By {{ post.author.username }} <br>
               {{ post.created_at|date:"M d, Y" }}
             </p>
             {% if user.is_authenticated %}
-              <a href="{% url 'post_detail' slug=post.slug %}" class="btn btn-primary mt-2">Read More</a>
+              <a href="{% url 'post_detail' slug=post.slug %}" class="btn btn-primary mt-3 w-100">Read More</a>
             {% else %}
-              <a href="{% url 'login' %}" class="btn btn-secondary mt-2">Login to Read</a>
+              <a href="{% url 'login' %}" class="btn btn-outline-secondary mt-3 w-100">Login to Read</a>
             {% endif %}
           </div>
         </div>
       </div>
     {% empty %}
-      <p>No posts yet.</p>
+      <p class="text-center">No posts yet.</p>
     {% endfor %}
   </div>
 </div>
