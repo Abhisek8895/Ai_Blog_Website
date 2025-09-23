@@ -1,14 +1,23 @@
 {% extends "base.html" %}
 
-{% block content %}
-<div class="container mt-4">
-  <h2>Delete Blog</h2>
-  <p>Are you sure you want to delete the blog post: <strong>{{ post.title }}</strong>?</p>
+{% block title %}Delete Blog: {{ post.title }}{% endblock %}
 
-  <form method="POST">
-    {% csrf_token %}
-    <button type="submit" class="btn btn-danger">Yes, delete</button>
-    <a href="{% url 'post_detail' slug=post.slug %}" class="btn btn-secondary">Cancel</a>
-  </form>
+{% block content %}
+<div class="container mt-5">
+    <div class="card shadow-sm rounded">
+        <div class="card-body text-center">
+            <h2 class="card-title text-danger mb-4">Delete Blog</h2>
+            <p class="mb-4">
+                Are you sure you want to delete the blog post:
+                <strong>{{ post.title }}</strong>?
+            </p>
+
+            <form method="POST" class="d-flex justify-content-center gap-3">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger">Yes, delete</button>
+                <a href="{% url 'post_detail' slug=post.slug %}" class="btn btn-secondary">Cancel</a>
+            </form>
+        </div>
+    </div>
 </div>
 {% endblock %}
