@@ -5,19 +5,18 @@ import markdown
 from django.utils.safestring import mark_safe
 import re
 
-def save_generated_blog(request, blog_output,category):
-    pass
+import json
 
 def blog_text_cleaning(blog_output):
-    # Remove starting/ending triple backticks and language markers
-    clean_text = re.sub(r"^```[a-zA-Z]*\n|```$", "", blog_output, flags=re.MULTILINE)
-    
-    # Extracting to dictionary
-    local_vars = {}
-    exec(clean_text, {}, local_vars)
-    blog_post = local_vars["blog_post"]
+    # Remove triple backticks & language markers
+    clean_text = re.sub(r"^```[a-zA-Z]*\n|```$", "", blog_output, flags=re.MULTILINE).strip()
 
-    # Convert markdown content to HTML for Django
+    try:
+        blog_post = json.loads(clean_text)   # safer than exec
+    except json.JSONDecodeError:
+        raise ValueError("AI output is not valid JSON")
+
+    # Convert markdown to HTML
     blog_post["Content"] = mark_safe(markdown.markdown(blog_post["Content"]))
 
     return blog_post
