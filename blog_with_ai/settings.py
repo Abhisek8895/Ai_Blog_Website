@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'blog',
     'comments',
     'generator',
+    'widget_tweaks'
 ]
 
 MIDDLEWARE = [
