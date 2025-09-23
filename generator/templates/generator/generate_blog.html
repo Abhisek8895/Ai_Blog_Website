@@ -1,32 +1,95 @@
-{% extends "base.html" %} {% block content %}
-<div class="container mt-4">
-  <h2>AI Blog Generator</h2>
-  <p class="text-muted">
-    Generate a blog post using AI. Just provide a topic, word count, and tone.
-  </p>
+{% extends "base.html" %}
+{% load widget_tweaks %}
 
-  <form method="post" class="mb-4">
-    {% csrf_token %} {{ form.as_p }}
-    <button type="submit" class="btn btn-primary">Generate Blog</button>
-  </form>
+{% block title %}AI Blog Generator{% endblock %}
 
-  {% if cleaned_blog %}
-  <div class="card mt-4">
+{% block content %}
+<div class="container mt-5">
+  <div class="card shadow-sm rounded">
     <div class="card-body">
-      <h4 class="card-title">Generated Blog</h4>
-      <h5>{{ cleaned_blog.Title }}</h5>
-      <p class="card-text" style="white-space: pre-line">
-        {{ cleaned_blog.Content }}
+      <h2 class="card-title mb-3">AI Blog Generator</h2>
+      <p class="text-muted mb-4">
+        Generate a blog post using AI. Provide a topic, desired word count, and tone.
       </p>
 
-      <a
-        href="{% url 'create_post' %}?title={{ cleaned_blog.Title|urlencode }}&content={{ cleaned_blog.Content|safe|urlencode }}"
-        class="btn btn-success"
-      >
-        Use This for New Post
-      </a>
+      <!-- Generate Form -->
+      <form id="generateForm" method="post" class="mb-4">
+        {% csrf_token %}
+
+        <!-- Topic -->
+        <div class="mb-3">
+  <label for="{{ form.prompt.id_for_label }}" class="form-label">Topic</label>
+  {{ form.prompt|add_class:"form-control"|attr:"placeholder:Enter your blog topic"|attr:"required" }}
+  {% for error in form.prompt.errors %}
+    <div class="text-danger small">{{ error }}</div>
+  {% endfor %}
+</div>
+
+
+
+        <!-- Word Count -->
+        <div class="mb-3">
+          <label for="{{ form.word_count.id_for_label }}" class="form-label">Word Count</label>
+          {{ form.word_count|add_class:"form-control" }}
+          {% for error in form.word_count.errors %}
+          <div class="text-danger small">{{ error }}</div>
+          {% endfor %}
+        </div>
+
+        <!-- Tone -->
+        <div class="mb-3">
+          <label for="{{ form.tone.id_for_label }}" class="form-label">Tone</label>
+          {{ form.tone|add_class:"form-select" }}
+          {% for error in form.tone.errors %}
+          <div class="text-danger small">{{ error }}</div>
+          {% endfor %}
+        </div>
+
+        <div class="d-flex gap-2">
+          <button type="submit" class="btn btn-primary">Generate Blog</button>
+          <button type="reset" class="btn btn-outline-secondary">Reset</button>
+        </div>
+      </form>
+
+      <!-- Generated Blog Preview -->
+      {% if cleaned_blog %}
+      <div class="card mt-4 border-success shadow-sm">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-start">
+            <div>
+              <h4 class="card-title text-success mb-1">Generated Blog</h4>
+              <h5 class="mb-3">{{ cleaned_blog.Title }}</h5>
+            </div>
+            <div>
+              <!-- Regenerate: re-submit the form with current inputs -->
+              <button type="button" class="btn btn-outline-secondary me-2"
+                onclick="document.getElementById('generateForm').submit();">
+                Regenerate
+              </button>
+
+              <!-- Use in Create Post (URL-encode title & content) -->
+              <a href="{% url 'create_post' %}?title={{ cleaned_blog.Title|urlencode }}&content={{ cleaned_blog.Content|urlencode }}"
+                class="btn btn-success">
+                Use This for New Post
+              </a>
+            </div>
+          </div>
+
+          <hr>
+
+          <p class="card-text" style="white-space: pre-line;">{{ cleaned_blog.Content }}</p>
+
+          <small class="text-muted">
+            <!-- optional: show generation time if you're passing it -->
+            {% if cleaned_blog.generated_at %}
+            Generated: {{ cleaned_blog.generated_at|date:"M d, Y H:i" }}
+            {% endif %}
+          </small>
+        </div>
+      </div>
+      {% endif %}
+
     </div>
   </div>
-  {% endif %}
 </div>
 {% endblock %}
