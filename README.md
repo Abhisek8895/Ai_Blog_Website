@@ -76,9 +76,9 @@ To set up the project locally, follow these steps:
 ## Technologies Used
 
 * **Backend**: Django
-* **Frontend**: HTML, CSS, JavaScript
-* **AI Integration**: OpenAI API (or similar service)
-* **Database**: SQLite (default), PostgreSQL (recommended for production)
+* **Frontend**: HTML, CSS
+* **AI Integration**: Gemini, Huggingface
+* **Database**: SQLite
 * **Authentication**: Django's built-in authentication system
 
 ## Contributing
@@ -99,6 +99,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## Acknowledgements
 
-* [OpenAI](https://openai.com/) for providing the AI models used in this project.
+* [Gemini](https://developers.google.com/assistant/generative-ai) and [Huggingface](https://huggingface.co/) for providing the AI models used in this project.
 * [Django](https://www.djangoproject.com/) for the robust web framework.
 * [Bootstrap](https://getbootstrap.com/) for the responsive front-end design.
